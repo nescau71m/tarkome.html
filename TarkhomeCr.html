@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     
+<title>TarkHomeCr</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1, h2 {
+            color: white;
+        }
+        footer {
+            background-color: green;
+            position: relative;
+        }
+        .menu {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: none;
+            background-color: #808080;
+            border: 1px solid #ccc;
+            padding: 10px;
+            z-index: 1000;
+        }
+        .menu-item {
+            margin: 5px 0;
+        }
+        .three-dots {
+            cursor: pointer;
+            color: green;
+            font-size: 24px;
+            position: absolute;
+            top: 10px;
+            right: 40px;
+        }
+        input[type="text"] {
+            color: white;
+            background-color: transparent;
+            border: 1px solid white;
+            padding: 5px;
+            margin: 10px 0;
+        }
+        .search-engines {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .engine {
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        img {
+            width: 40px;
+            height: auto;
+            transition: transform 0.2s;
+        }
+        img:hover {
+            transform: scale(1.1);
+        }
+        .more-extensions {
+            margin-top: 20px;
+            cursor: pointer;
+            color: green;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><span style="color: green;">TarkHomeCr</span></h1>
+        <h2>Bem-vindo ao THC</h2>
+        <div class="three-dots" onclick="toggleMenu()">⋮</div>
+        <div class="menu" id="menu">
+            <div class="menu-item"><a href="personalizar.html" style="color: white; text-decoration: none;">Personalizar</a></div>
+            <div class="menu-item"><a href="configuracao.html" style="color: white; text-decoration: none;">Configuração</a></div>
+            <div class="menu-item"><a href="pedido_de_codigo.html" style="color: white; text-decoration: none;">Pedido de Código</a></div>
+            <div class="menu-item"><a href="sobre.html" style="color: white; text-decoration: none;">Sobre</a></div>
+            <div class="menu-item"><a href="me_ajude.html" style="color: white; text-decoration: none;">Me Ajude</a></div>
+        </div>
+    </header>
+
+    <main>
+        <form id="searchForm" onsubmit="return false;">
+            <label for="search">Pesquisar:</label>
+            <input type="text" id="search" name="q" required placeholder="Digite sua pesquisa...">
+            <button type="button" id="searchButton">Buscar</button>
+        </form>
+        
+        <h3>Extensões</h3>
+        <div class="search-engines">
+            <div class="engine" id="google">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Google_logo_2015.svg" alt="Google">
+            </div>
+            <div class="engine" id="youtube">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube">
+            </div>
+            <div class="engine" id="bing">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Bing_logo_2016.svg" alt="Bing">
+            </div>
+            <div class="engine" id="duckduckgo">
+                <img src="https://upload.wikimedia.org/wikipedia/en/d/d5/DuckDuckGo_logo.png" alt="DuckDuckGo">
+            </div>
+            <div class="engine" id="yahoo">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Yahoo%21_logo.svg" alt="Yahoo">
+            </div>
+            <div class="engine" id="ask">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Ask.com_logo.svg" alt="Ask">
+            </div>
+            <div class="engine" id="baidu">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/8b/Baidu_logo.svg" alt="Baidu">
+            </div>
+        </div>
+        <div class="more-extensions" onclick="showMore()">Mais Extensões</div>
+    </main>
+
+    <footer>
+        <p>©TarkHomeCr</p>
+    </footer>
+
+    <script>
+        let selectedEngine = null;
+
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.three-dots')) {
+                const menu = document.getElementById('menu');
+                if (menu.style.display === 'block') {
+                    menu.style.display = 'none';
+                }
+            }
+        }
+
+        document.querySelectorAll('.engine').forEach(engine => {
+            engine.addEventListener('click', function() {
+                selectedEngine = this.id;
+            });
+        });
+
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const query = document.getElementById('search').value;
+            let url;
+
+            if (selectedEngine) {
+                switch (selectedEngine) {
+                    case 'google':
+                        url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                        break;
+                    case 'youtube':
+                        url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+                        break;
+                    case 'bing':
+                        url = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
+                        break;
+                    case 'duckduckgo':
+                        url = `https://www.duckduckgo.com/?q=${encodeURIComponent(query)}`;
+                        break;
+                    case 'yahoo':
+                        url = `https://search.yahoo.com/search?p=${encodeURIComponent(query)}`;
+                        break;
+                    case 'ask':
+                        url = `https://www.ask.com/web?q=${encodeURIComponent(query)}`;
+                        break;
+                    case 'baidu':
+                        url = `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`;
+                        break;
+                }
+            } else {
+                // Pesquisa local no servidor
+                url = `search_results.html?q=${encodeURIComponent(query)}`;
+            }
+
+            window.location.href = url;
+        });
+
+        function showMore() {
+            alert('Em breve mais extensões serão adicionadas!');
+        }
+    </script>
+</body>
+</html>
