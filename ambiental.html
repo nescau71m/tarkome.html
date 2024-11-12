@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fauna Ambiental</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url("https://i.imgur.com/uApM5Ac.jpeg");
+            background-size: cover;
+            color: Black;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        article {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        article a {
+            color: red;
+        }
+        h1 { 
+            color:red;
+
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        #formContainer {
+            display: none;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Fauna Ambiental</h1>
+        <nav>
+            <ul>
+                <li><a href="ambiental.html">home</a></li>
+<li><a href="sobre-nos.html">quem somos</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="noticias">
+            <h2>Últimas Notícias de Ecologia</h2>
+            <article id="noticiasPostadas"></article>
+            <div id="formContainer">
+                <h2>Postar Notícia</h2>
+                <input type="text" id="titulo" placeholder="Título da notícia" required>
+                <input type="text" id="link" placeholder="Link da notícia" required>
+                <input type="text" id="imagem" placeholder="URL da imagem" required>
+                <textarea id="descricao" rows="4" placeholder="Descrição da notícia" required></textarea>
+                <button onclick="postarNoticia()">Postar</button>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Fauna Ambiental</p>
+        <div id="adminSection">
+            <h3>Acesso Administrativo</h3>
+            <input type="password" id="senha" placeholder="Digite a senha">
+            <button onclick="verificarSenha()">Acessar</button>
+        </div>
+    </footer>
+
+    <script>
+        const senhaCorreta = '53';
+        let isAdmin = false; // Variável para rastrear se o usuário é admin
+
+        // Função para carregar postagens do localStorage
+        function carregarPostagens() {
+            const postagens = JSON.parse(localStorage.getItem('postagens')) || [];
+            postagens.forEach(postagem => {
+                adicionarPostagem(postagem.titulo, postagem.link, postagem.imagem, postagem.descricao);
+            });
+        }
+
+        function verificarSenha() {
+            const senha = document.getElementById('senha').value;
+            if (senha === senhaCorreta) {
+                document.getElementById('formContainer').style.display = 'block'; // Exibe o formulário
+                document.getElementById('adminSection').style.display = 'none'; // Esconde a seção de senha
+                isAdmin = true; // Define que o usuário é admin
+                alert('Acesso concedido. Você agora é administrador.');
+            } else {
+                alert('Senha incorreta. Tente novamente.');
+            }
+        }
+
+        function postarNoticia() {
+            const titulo = document.getElementById('titulo').value;
+            const link = document.getElementById('link').value;
+            const imagem = document.getElementById('imagem').value;
+            const descricao = document.getElementById('descricao').value;
+
+            const postagem = { titulo, link, imagem, descricao };
+            adicionarPostagem(titulo, link, imagem, descricao);
+
+            // Armazenar no localStorage
+            const postagens = JSON.parse(localStorage.getItem('postagens')) || [];
+            postagens.push(postagem);
+            localStorage.setItem('postagens', JSON.stringify(postagens));
+
+            // Limpar os campos
+            document.getElementById('titulo').value = '';
+            document.getElementById('link').value = '';
+            document.getElementById('imagem').value = '';
+            document.getElementById('descricao').value = '';
+        }
+
+        function adicionarPostagem(titulo, link, imagem, descricao) {
+            const noticiaHtml = `
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 10px; margin: 10px 0;">
+                    <h3>${titulo}</h3>
+                    <img src="${imagem}" alt="${titulo}" style="max-width: 100%; height: auto;">
+                    <p>${descricao} <a href="${link}" style="color: red;">Veja a notícia completa</a></p>
+                    ${isAdmin ? '<button onclick="excluirNoticia(this)">Excluir</button>' : ''}
+                </div>
+            `;
+            document.getElementById('noticiasPostadas').innerHTML += noticiaHtml;
+        }
+
+        function excluirNoticia(button) {
+            const noticia = button.parentElement; // Obtém o elemento pai (div da notícia)
+            noticia.remove(); // Remove a notícia do DOM
+
+            // Remover do localStorage
+            const titulo = noticia.getElementsByTagName('h3')[0].innerText;
+            let postagens = JSON.parse(localStorage.getItem('postagens')) || [];
+            postagens = postagens.filter(post => post.titulo !== titulo);
+            localStorage.setItem('postagens', JSON.stringify(postagens));
+        }
+
+        // Carregar postagens ao iniciar a página
+        carregarPostagens();
+        
+        // Exemplo inicial para garantir que as imagens aparecem
+        localStorage.setItem('postagens', JSON.stringify([
+            { titulo: "Exemplo de Notícia 1", link: "#", imagem: "https://via.placeholder.com/300", descricao: "Descrição da notícia 1." },
+            { titulo: "Exemplo de Notícia 2", link: "#", imagem: "https://via.placeholder.com/300", descricao: "Descrição da notícia 2." }
+        ]));
+        carregarPostagens(); // Carregar as postagens de exemplo
+    </script>
+</body>
+</html>
